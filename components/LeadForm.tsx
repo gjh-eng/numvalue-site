@@ -82,7 +82,7 @@ export const LeadForm: React.FC = () => {
           ) : (
             <form
               ref={formRef}
-              action="https://numvalue.getform.com/y50jr"
+              action="https://numvalue.getform.com/jm5ln"
               method="POST"
               target="hidden_iframe"
               onSubmit={handleSubmit}
