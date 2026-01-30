@@ -5,15 +5,21 @@ export const LeadForm: React.FC = () => {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const handleSubmit = () => {
-    // action 방식 제출은 브라우저가 처리 (target=iframe)
-    setFormState('submitting');
+  // ✅ iframe 첫 로드(초기 렌더)와 제출 후 로드를 구분하기 위한 플래그
+  const submittedRef = useRef(false);
 
-    // UX용: 바로 success로 바꾸거나(빠름), 약간 딜레이 줄 수 있음
-    window.setTimeout(() => {
-      setFormState('success');
-      formRef.current?.reset();
-    }, 600);
+  const handleSubmit = () => {
+    setFormState('submitting');
+    submittedRef.current = true; // 이번 iframe load는 제출로 인한 것
+  };
+
+  const handleIframeLoad = () => {
+    // iframe이 처음 렌더될 때도 load가 1번 뜰 수 있어서 guard
+    if (!submittedRef.current) return;
+
+    submittedRef.current = false;
+    setFormState('success');
+    formRef.current?.reset();
   };
 
   return (
@@ -60,6 +66,7 @@ export const LeadForm: React.FC = () => {
             name="hidden_iframe"
             title="hidden_iframe"
             style={{ display: 'none' }}
+            onLoad={handleIframeLoad}
           />
 
           {formState === 'success' ? (
@@ -92,7 +99,10 @@ export const LeadForm: React.FC = () => {
               <input type="text" name="_gotcha" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
               <div>
-                <label htmlFor="company" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                <label
+                  htmlFor="company"
+                  className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2"
+                >
                   Company / Brand
                 </label>
                 <input
@@ -106,7 +116,10 @@ export const LeadForm: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="name" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                <label
+                  htmlFor="name"
+                  className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2"
+                >
                   Contact Person
                 </label>
                 <input
@@ -120,7 +133,10 @@ export const LeadForm: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2"
+                >
                   Email Address
                 </label>
                 <input
@@ -134,7 +150,10 @@ export const LeadForm: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                <label
+                  htmlFor="phone"
+                  className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2"
+                >
                   Phone Number
                 </label>
                 <input
