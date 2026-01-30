@@ -1,17 +1,40 @@
+
+
+
 import React, { useState } from 'react';
 import { Send, Check, Download } from 'lucide-react';
 
 export const LeadForm: React.FC = () => {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormState('submitting');
-    // Simulate API call
-    setTimeout(() => {
-      setFormState('success');
-    }, 1500);
-  };
+ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setFormState('submitting');
+
+  const form = e.currentTarget;
+  const data = new FormData(form);
+
+  try {
+    const res = await fetch('https://numvalue.getform.com/y50jr', {
+      method: 'POST',
+      body: data,
+      headers: { Accept: 'application/json' },
+    });
+
+    if (!res.ok) {
+     const text = await res.text().catch(() => '');
+     throw new Error(`Submit failed: ${res.status} ${text}`);
+}
+
+    setFormState('success');
+    form.reset();
+    } catch (err: any) {
+    console.error(err);
+    alert('전송 실패. 잠시 후 다시 시도해주세요.');
+    setFormState('idle');
+  }
+};
+
 
   return (
     <section className="py-32 bg-white text-black relative">
@@ -64,11 +87,13 @@ export const LeadForm: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                <input type="text" name="_gotcha" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
                 <div>
                   <label htmlFor="company" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Company / Brand</label>
                   <input 
                     type="text" 
                     id="company" 
+                    name="company"
                     required 
                     placeholder="브랜드 또는 회사명을 입력하세요"
                     className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition-all"
@@ -80,6 +105,7 @@ export const LeadForm: React.FC = () => {
                   <input 
                     type="text" 
                     id="name" 
+                    name="name"
                     required 
                     placeholder="담당자 성함/직급"
                     className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition-all"
@@ -91,6 +117,7 @@ export const LeadForm: React.FC = () => {
                   <input 
                     type="email" 
                     id="email" 
+                    name="email"
                     required 
                     placeholder="example@company.com"
                     className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition-all"
@@ -102,6 +129,7 @@ export const LeadForm: React.FC = () => {
                   <input 
                     type="tel" 
                     id="phone" 
+                    name="phone"
                     required 
                     placeholder="010-0000-0000"
                     className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white placeholder-gray-500 focus:outline-none focus:border-white focus:bg-white/20 transition-all"
