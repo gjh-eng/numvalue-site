@@ -13,7 +13,7 @@ const LeadForm = () => {
     const formData = new FormData(form);
 
     try {
-      const response = await fetch("https://getform.io/f/nmvo3", {
+      const response = await fetch("https://getform.io/forms/159485", {
         method: "POST",
         body: formData,
         headers: {
