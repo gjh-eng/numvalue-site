@@ -4,7 +4,7 @@ import { Hero } from './components/Hero';
 import { Philosophy } from './components/Philosophy';
 import { Services } from './components/Services';
 import { Works } from './components/Works';
-import { LeadForm } from './components/LeadForm';
+import  LeadForm  from './components/LeadForm';
 import { Footer } from './components/Footer';
 import { ArrowUp } from 'lucide-react';
 
