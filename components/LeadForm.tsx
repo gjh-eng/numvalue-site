@@ -1,16 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Send } from 'lucide-react';
 
 const GETFORM_ENDPOINT = 'https://damobabo.getform.com/nmvo3';
-
-// ✅ 쿼리 먼저, 해시 나중 (더 안정적)
 const REDIRECT_URL = 'https://numvalue-site.vercel.app/?sent=1#contact';
 
 const LeadForm = () => {
   const [formState, setFormState] = useState<'idle' | 'submitting'>('idle');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // ✅ SSR/빌드 안전: window 접근 전부 가드
+  // 접수완료 상태 체크 (쿼리 기반)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -20,22 +18,42 @@ const LeadForm = () => {
     }
   }, []);
 
-  const handleSubmit = () => {
+  // 제출 처리 (겟폼으로 백그라운드 전송)
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setFormState('submitting');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      await fetch(GETFORM_ENDPOINT, {
+        method: 'POST',
+        body: formData,
+      });
+
+      // 성공 시 우리 사이트로 이동
+      window.location.href = REDIRECT_URL;
+
+    } catch (error) {
+      console.error('Submit error:', error);
+      setFormState('idle');
+    }
   };
 
+  // 다시 작성하기
   const handleReset = () => {
     if (typeof window === 'undefined') return;
 
     const url = new URL(window.location.href);
     url.searchParams.delete('sent');
-    // hash는 contact 유지
     url.hash = '#contact';
 
     window.history.replaceState({}, document.title, url.toString());
     window.location.reload();
   };
 
+  // ✅ 접수완료 화면
   if (isSuccess) {
     return (
       <section className="py-20 px-4">
@@ -58,13 +76,12 @@ const LeadForm = () => {
     );
   }
 
+  // ✅ 기본 폼 화면
   return (
     <section className="py-20 px-4">
       <div className="max-w-4xl mx-auto">
         <form
           id="mail-collector"
-          action={GETFORM_ENDPOINT}
-          method="POST"
           onSubmit={handleSubmit}
           className="space-y-6 relative z-10"
         >
@@ -76,9 +93,6 @@ const LeadForm = () => {
             tabIndex={-1}
             autoComplete="off"
           />
-
-          {/* 제출 후 다시 사이트로 */}
-          <input type="hidden" name="_redirect" value={REDIRECT_URL} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -153,12 +167,16 @@ const LeadForm = () => {
             disabled={formState === 'submitting'}
             className="w-full bg-white text-black font-bold text-lg py-5 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
-            {formState === 'submitting' ? '전송 중...' : <>회사소개서 받기 <Send size={18} /></>}
+            {formState === 'submitting'
+              ? '전송 중...'
+              : <>회사소개서 받기 <Send size={18} /></>}
           </button>
 
-          {formState === 'submitting' ? (
-            <p className="text-xs text-gray-400 text-center">전송 중입니다… 잠시만 기다려주세요.</p>
-          ) : null}
+          {formState === 'submitting' && (
+            <p className="text-xs text-gray-400 text-center">
+              전송 중입니다… 잠시만 기다려주세요.
+            </p>
+          )}
         </form>
       </div>
     </section>
