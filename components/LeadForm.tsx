@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Send } from 'lucide-react';
 
-const GETFORM_ENDPOINT = 'https://damobabo.getform.com/nmvo3';
-const REDIRECT_URL = 'https://numvalue-site.vercel.app/?sent=1#contact';
+const REDIRECT_URL = '/?sent=1#contact';
+
+type FormState = 'idle' | 'submitting';
 
 const LeadForm = () => {
-  const [formState, setFormState] = useState<'idle' | 'submitting'>('idle');
+  const [formState, setFormState] = useState<FormState>('idle');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // sent=1 이면 접수완료 화면
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const url = new URL(window.location.href);
     if (url.searchParams.get('sent') === '1') setIsSuccess(true);
   }, []);
-
-  const handleSubmit = () => {
-    // ✅ 실제 전송은 브라우저 기본 submit이 GETFORM으로 보냄
-    // 우리는 버튼만 잠깐 잠그기
-    setFormState('submitting');
-  };
 
   const handleReset = () => {
     if (typeof window === 'undefined') return;
@@ -30,6 +24,41 @@ const LeadForm = () => {
 
     window.history.replaceState({}, document.title, url.toString());
     window.location.reload();
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (formState === 'submitting') return;
+
+    setFormState('submitting');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      company: String(formData.get('company') || ''),
+      name: String(formData.get('name') || ''),
+      email: String(formData.get('email') || ''),
+      phone: String(formData.get('phone') || ''),
+      message: String(formData.get('message') || ''),
+    };
+
+    try {
+      const r = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!r.ok) throw new Error('submit failed');
+
+      // ✅ 겟폼으로 안 넘어가고, 우리 페이지에서 success 상태로만 전환
+      window.location.href = REDIRECT_URL;
+    } catch (err) {
+      console.error(err);
+      alert('전송 오류가 발생했습니다. 다시 시도해주세요.');
+      setFormState('idle');
+    }
   };
 
   if (isSuccess) {
@@ -57,27 +86,9 @@ const LeadForm = () => {
   return (
     <section className="py-20 px-4" id="contact">
       <div className="max-w-4xl mx-auto">
-        <form
-          id="mail-collector"
-          action={GETFORM_ENDPOINT}
-          method="POST"
-          onSubmit={handleSubmit}
-          className="space-y-6 relative z-10"
-        >
-          {/* ✅ 겟폼 성공 후 돌아올 주소 */}
-          <input type="hidden" name="_redirect" value={REDIRECT_URL} />
-
-          {/* ✅ 스팸봇 방지 (봇이 보통 채움) */}
-          <input
-            type="text"
-            name="_gotcha"
-            style={{ display: 'none' }}
-            tabIndex={-1}
-            autoComplete="off"
-          />
-
-          {/* (선택) 메일 제목 */}
-          {/* <input type="hidden" name="_subject" value="[NUMVALUE] 회사소개서 요청" /> */}
+        <form id="mail-collector" onSubmit={handleSubmit} className="space-y-6 relative z-10">
+          {/* 스팸 방지 */}
+          <input type="text" name="_gotcha" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -152,13 +163,7 @@ const LeadForm = () => {
             disabled={formState === 'submitting'}
             className="w-full bg-white text-black font-bold text-lg py-5 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
-            {formState === 'submitting' ? (
-              '전송 중...'
-            ) : (
-              <>
-                회사소개서 받기 <Send size={18} />
-              </>
-            )}
+            {formState === 'submitting' ? '전송 중...' : <>회사소개서 받기 <Send size={18} /></>}
           </button>
 
           {formState === 'submitting' ? (
