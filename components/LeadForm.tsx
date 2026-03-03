@@ -15,33 +15,15 @@ const LeadForm = () => {
     const url = new URL(window.location.href);
     if (url.searchParams.get('sent') === '1') {
       setIsSuccess(true);
+      setFormState('idle');
     }
   }, []);
 
-  // 제출 처리 (겟폼으로 백그라운드 전송)
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // ✅ action submit은 그대로 두고, UI만 전송중으로 바꿈
+  const handleSubmit = () => {
     setFormState('submitting');
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    try {
-      await fetch(GETFORM_ENDPOINT, {
-        method: 'POST',
-        body: formData,
-      });
-
-      // 성공 시 우리 사이트로 이동
-      window.location.href = REDIRECT_URL;
-
-    } catch (error) {
-      console.error('Submit error:', error);
-      setFormState('idle');
-    }
   };
 
-  // 다시 작성하기
   const handleReset = () => {
     if (typeof window === 'undefined') return;
 
@@ -76,12 +58,13 @@ const LeadForm = () => {
     );
   }
 
-  // ✅ 기본 폼 화면
   return (
     <section className="py-20 px-4">
       <div className="max-w-4xl mx-auto">
         <form
           id="mail-collector"
+          action={GETFORM_ENDPOINT}
+          method="POST"
           onSubmit={handleSubmit}
           className="space-y-6 relative z-10"
         >
@@ -93,6 +76,9 @@ const LeadForm = () => {
             tabIndex={-1}
             autoComplete="off"
           />
+
+          {/* ✅ 제출 후 다시 사이트로 */}
+          <input type="hidden" name="_redirect" value={REDIRECT_URL} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -167,9 +153,13 @@ const LeadForm = () => {
             disabled={formState === 'submitting'}
             className="w-full bg-white text-black font-bold text-lg py-5 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
-            {formState === 'submitting'
-              ? '전송 중...'
-              : <>회사소개서 받기 <Send size={18} /></>}
+            {formState === 'submitting' ? (
+              '전송 중...'
+            ) : (
+              <>
+                회사소개서 받기 <Send size={18} />
+              </>
+            )}
           </button>
 
           {formState === 'submitting' && (
