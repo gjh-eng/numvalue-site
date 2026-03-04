@@ -18,16 +18,15 @@ export const Footer: React.FC = () => {
         <div className="md:w-1/3">
            <h3 className="text-white font-bold mb-4 uppercase tracking-wider">Contact</h3>
            <ul className="space-y-2">
-             <li>Email: contact@numvalue.com (예시)</li>
-             <li>Instagram: @numvalue</li>
-             <li>Tel: 02-000-0000 (예시)</li>
+             <li>Email: info@numvalue.com </li>
+             <li>Instagram: @numvalue </li>
+             
            </ul>
         </div>
 
         <div className="md:w-1/3">
-           <h3 className="text-white font-bold mb-4 uppercase tracking-wider">Address</h3>
-           <p>서울특별시 용산구 이태원동 (예시)</p>
-           <p className="mt-8 text-xs opacity-50">© 2024 NUMVALUE. All rights reserved.</p>
+          
+           <p className="mt-8 text-xs opacity-50">© 2026 NUMVALUE. All rights reserved. build by @damnoldshit </p>
         </div>
       </div>
     </footer>
