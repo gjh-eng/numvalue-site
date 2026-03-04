@@ -85,9 +85,7 @@ export const Works: React.FC = () => {
                 <p className="text-gray-500 leading-relaxed mb-8 max-w-md">
                   {work.desc}
                 </p>
-                <button className="text-sm font-bold border-b border-white pb-1 hover:opacity-70 transition-opacity">
-                   VIEW CASE STUDY
-                </button>
+              
               </div>
             </div>
           ))}
