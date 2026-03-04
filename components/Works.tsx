@@ -7,7 +7,7 @@ const works = [
     category: 'BRAND STRATEGY & LAUNCH',
     title: '웨어러블 뷰티 브랜드 런칭 및 팝업',
     desc: '브랜드 런칭부터 대규모 팝업스토어 운영, 통합 마케팅 전략까지 전 과정 총괄. 누적 방문객 5만, 팝업 3회 성공.',
-    image: 'https://picsum.photos/seed/perware1/800/1000', 
+    image: '/images/per.jpeg', 
     tags: ['Brand Strategy', 'Pop-up', 'Design']
   },
   {
@@ -16,7 +16,7 @@ const works = [
     category: 'COLLABORATION EXHIBITION',
     title: 'Romance and Funk: The Fanciful World',
     desc: '뷰티와 패션 브랜드의 협업 전시. 단순 병치가 아닌 두 브랜드의 시너지를 극대화하는 경험 설계.',
-    image: 'https://picsum.photos/seed/deardahlia/800/1000',
+    image: '/images/instant.jpeg',
     tags: ['Space', 'Exhibition', 'Collaboration']
   },
   {
@@ -25,7 +25,7 @@ const works = [
     category: 'EVENT & SPACE',
     title: 'Swim Rave Party',
     desc: '국내 최초 실내 수영장 이벤트. 안전 리스크 관리와 대규모 현장 운영 역량이 요구된 프로젝트.',
-    image: 'https://picsum.photos/seed/noitow/800/1000',
+    image: '/images/noi.jpeg',
     tags: ['Event', 'Safety', 'Operation']
   },
   {
@@ -34,7 +34,7 @@ const works = [
     category: 'CAMPAIGN FILM',
     title: '프리미엄 리빙 브랜드 캠페인',
     desc: '온라인 퍼포먼스 콘텐츠와 오프라인 공간 경험을 하나의 응집력 있는 브랜드 스토리로 통합.',
-    image: 'https://picsum.photos/seed/heriter/800/1000',
+    image: '/images/heri.jpeg',
     tags: ['Film', 'Marketing', 'Premium']
   }
 ];
