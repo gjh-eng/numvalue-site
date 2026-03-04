@@ -26,7 +26,7 @@ export const Footer: React.FC = () => {
 
         <div className="md:w-1/3">
           
-           <p className="mt-8 text-xs opacity-50">© 2026 NUMVALUE. All rights reserved. build by @damnoldshit </p>
+           <p className="mt-8 text-xs opacity-50">© 2026 NUMVALUE. All rights reserved. </p> <p> website Build by @damnoldshit </p>
         </div>
       </div>
     </footer>
