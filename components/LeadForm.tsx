@@ -1,118 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { Send } from 'lucide-react';
 
-const GETFORM_ENDPOINT = 'https://getform.io/f/nmvo3';
-
 export default function LeadForm() {
-  const [formState, setFormState] = useState<'idle' | 'submitting'>('idle');
-  const [isSuccess, setIsSuccess] = useState(false);
-  const formRef = useRef<HTMLFormElement | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('sent') === '1') setIsSuccess(true);
-    }
-  }, []);
-
-  const handleSubmit = () => {
-    setFormState('submitting');
-    
-    // 데이터 전송 후 1초 뒤 UI 전환
-    setTimeout(() => {
-      if (typeof window !== 'undefined') {
-        const url = new URL(window.location.href);
-        url.searchParams.set('sent', '1');
-        url.hash = '#contact';
-        window.history.replaceState({}, '', url.toString());
-      }
-      setIsSuccess(true);
-      setFormState('idle');
-    }, 1000);
-  };
-
-  const handleReset = () => {
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href);
-      url.searchParams.delete('sent');
-      window.history.replaceState({}, '', url.toString());
-    }
-    setIsSuccess(false);
-    setFormState('idle');
-  };
-
-  if (isSuccess) {
-    return (
-      <section className="py-20 px-4" id="contact">
-        <div className="max-w-3xl mx-auto text-center bg-white/5 border border-white/10 rounded-2xl p-12">
-          <h3 className="text-3xl font-bold mb-4 text-white">접수완료</h3>
-          <p className="text-gray-400 mb-8">
-            회사소개서 요청이 정상적으로 접수되었습니다.<br />
-            빠른 시일 내에 이메일로 전달드리겠습니다.
-          </p>
-          <button
-            type="button"
-            onClick={handleReset}
-            className="bg-white text-black font-bold px-8 py-4 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            다시 작성하기
-          </button>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="py-20 px-4" id="contact">
       <div className="max-w-4xl mx-auto">
-        {/* 페이지 이동 방지용 iframe */}
-        <iframe name="getform_iframe" style={{ display: 'none' }}></iframe>
-
+        {/* 겟폼으로 직접 전송, 완료 후 다시 현재 페이지로 돌아옴 */}
         <form
-          ref={formRef}
-          action={GETFORM_ENDPOINT}
+          action="https://getform.io/f/nmvo3"
           method="POST"
-          target="getform_iframe"
-          onSubmit={handleSubmit}
           className="space-y-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Company / Brand</label>
-              <input type="text" name="company" required placeholder="회사명" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40 transition-colors" />
+              <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">Company / Brand</label>
+              <input type="text" name="company" required placeholder="회사명" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40" />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Contact Person</label>
-              <input type="text" name="Name" required placeholder="성함/직급" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40 transition-colors" />
+              <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">Contact Person</label>
+              <input type="text" name="Name" required placeholder="성함/직급" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Email Address</label>
-              <input type="email" name="Email" required placeholder="example@company.com" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40 transition-colors" />
+              <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">Email Address</label>
+              <input type="email" name="Email" required placeholder="example@company.com" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40" />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Phone Number</label>
-              <input type="text" name="Phone number" required placeholder="010-0000-0000" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40 transition-colors" />
+              <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">Phone Number</label>
+              <input type="text" name="Phone number" required placeholder="010-0000-0000" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40" />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Message (Optional)</label>
-            <textarea name="Message" rows={3} placeholder="문의 내용을 적어주세요" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40 transition-colors"></textarea>
+            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">Message</label>
+            <textarea name="Message" rows={3} placeholder="문의 내용을 적어주세요" className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white focus:outline-none focus:border-white/40"></textarea>
           </div>
 
-          <button
-            type="submit"
-            disabled={formState === 'submitting'}
-            className="w-full bg-white text-black font-bold text-lg py-5 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-          >
-            {formState === 'submitting' ? '전송 중...' : (
-              <>
-                회사소개서 받기 <Send size={18} />
-              </>
-            )}
+          {/* 스팸 방지용 (선택사항) */}
+          <input type="hidden" name="_gotcha" style={{ display: 'none' }} />
+
+          <button type="submit" className="w-full bg-white text-black font-bold text-lg py-5 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+            회사소개서 받기 <Send size={18} />
           </button>
         </form>
       </div>
