@@ -11,6 +11,7 @@ export default function LeadForm() {
           method="POST"
           className="space-y-6"
         >
+          <input type="hidden" name="_redirect" value="https://numvalue-site.vercel.app/?sent=1#contact" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-xs font-bold text-gray-500 mb-2 uppercase">Company / Brand</label>
