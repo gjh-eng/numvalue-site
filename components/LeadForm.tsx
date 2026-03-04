@@ -42,7 +42,7 @@ export default function LeadForm() {
       <div className="max-w-4xl mx-auto">
         {/* 겟폼의 보안 충돌을 피하기 위해 가장 표준적인 전송 방식을 사용합니다. */}
         <form
-          action="https://getform.io/f/l7w78"
+          action="https://formspree.io/f/xgolgywe"
           method="POST"
           className="space-y-6"
         >
